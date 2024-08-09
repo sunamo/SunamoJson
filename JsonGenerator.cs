@@ -2,7 +2,7 @@ namespace SunamoJson;
 
 public class JsonGenerator
 {
-    StringBuilder sb = new StringBuilder();
+    private readonly StringBuilder sb = new();
 
     public void Pair(string key, string value)
     {

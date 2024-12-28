@@ -59,7 +59,7 @@ bool fillAlsoFirstTwo = true)
     #endregion
 
     #region IsNullOrWhitespace
-    internal static string? IsNullOrWhitespace(string before, string argName, string argValue, bool notAllowOnlyWhitespace)
+    internal static string? IsNullOrWhitespace(string before, string argName, string? argValue, bool notAllowOnlyWhitespace)
     {
         string addParams;
         if (argValue == null)

@@ -1,5 +1,6 @@
 namespace SunamoJson;
 
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SunamoJson.Args;
 
@@ -8,12 +9,6 @@ using SunamoJson.Args;
 /// </summary>
 public static class SerializerHelperJson
 {
-    public static string GetPath(string path)
-    {
-        return path;
-        //return AppData.ci.GetFile(AppFolders.Other, fileNameWithoutExt + ".json");
-    }
-
     /// <summary>
     /// Writes the given object instance to a Json file.
     /// <para>Object type must have a parameterless constructor.</para>
@@ -26,12 +21,12 @@ public static class SerializerHelperJson
     /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
     public static
 #if ASYNC
-    async Task<string>
+    async Task<bool>
 #else
     void  
 #endif
- WriteToJsonFile<T>(
-        string fileNameWithoutExt,
+ WriteToJsonFile<T>(ILogger logger,
+        string path,
         T objectToWrite,
         WriteToJsonFileArgs? a = null
 
@@ -43,15 +38,23 @@ public static class SerializerHelperJson
             a = new WriteToJsonFileArgs();
         }
 
-        var contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite, a.Formatting);
+        string? contentsToWriteToFile = null;
+
+        try
+        {
+            contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite, a.Formatting);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message);
+            return false;
+        }
+
 
         if (a.TwoBackslashToSingle)
         {
             contentsToWriteToFile = contentsToWriteToFile.Replace(@"\\", "\\");
         }
-
-
-        var path = GetPath(fileNameWithoutExt);
 
         if (a.Append)
         {
@@ -62,7 +65,7 @@ public static class SerializerHelperJson
             await File.WriteAllTextAsync(path, contentsToWriteToFile);
         }
 
-        return path;
+        return true;
     }
 
     /// <summary>
@@ -78,14 +81,14 @@ public static class SerializerHelperJson
 #else
     T  
 #endif
- ReadFromJsonFile<T>(string fileNameWithoutExt, ReadFromJsonFileArgs a)
+ ReadFromJsonFile<T>(ILogger logger, string path, ReadFromJsonFileArgs a)
         where T : new()
     {
         var fileContents =
 #if ASYNC
     await
 #endif
-File.ReadAllTextAsync(GetPath(fileNameWithoutExt));
+File.ReadAllTextAsync(path);
 
         if (a.TwoSingleToBackslash)
         {
@@ -99,7 +102,7 @@ File.ReadAllTextAsync(GetPath(fileNameWithoutExt));
         }
         catch (Exception ex)
         {
-
+            logger.LogError(ex.Message);
         }
 
 

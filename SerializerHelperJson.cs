@@ -1,9 +1,5 @@
 namespace SunamoJson;
 
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SunamoJson.Args;
-
 /// <summary>
 /// SerializerHelper vyžaduje T a musel bych ho napsat do třídy aby se mi nabídli metody
 /// </summary>
@@ -29,7 +25,6 @@ public static class SerializerHelperJson
         string path,
         T objectToWrite,
         WriteToJsonFileArgs? a = null
-
     )
         where T : new()
     {
@@ -37,9 +32,7 @@ public static class SerializerHelperJson
         {
             a = new WriteToJsonFileArgs();
         }
-
         string? contentsToWriteToFile = null;
-
         try
         {
             contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite, a.Formatting);
@@ -49,13 +42,10 @@ public static class SerializerHelperJson
             logger.LogError(ex.Message);
             return false;
         }
-
-
         if (a.TwoBackslashToSingle)
         {
             contentsToWriteToFile = contentsToWriteToFile.Replace(@"\\", "\\");
         }
-
         if (a.Append)
         {
             await File.AppendAllTextAsync(path, contentsToWriteToFile);
@@ -64,10 +54,8 @@ public static class SerializerHelperJson
         {
             await File.WriteAllTextAsync(path, contentsToWriteToFile);
         }
-
         return true;
     }
-
     /// <summary>
     /// Reads an object instance from an Json file.
     /// <para>Object type must have a parameterless constructor.</para>
@@ -89,12 +77,10 @@ public static class SerializerHelperJson
     await
 #endif
 File.ReadAllTextAsync(path);
-
         if (a.TwoSingleToBackslash)
         {
             fileContents = fileContents.Replace("\\", "\\\\");
         }
-
         T? deser = default;
         try
         {
@@ -104,9 +90,6 @@ File.ReadAllTextAsync(path);
         {
             logger.LogError(ex.Message);
         }
-
-
-
         return deser;
     }
 }

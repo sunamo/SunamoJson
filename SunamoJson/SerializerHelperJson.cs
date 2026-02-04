@@ -1,52 +1,54 @@
 namespace SunamoJson;
 
 /// <summary>
-/// SerializerHelper vyžaduje T a musel bych ho napsat do třídy aby se mi nabídli metody
+/// Helper class for JSON serialization and deserialization.
 /// </summary>
 public static class SerializerHelperJson
 {
     /// <summary>
-    /// Writes the given object instance to a Json file.
+    /// Writes the given object instance to a JSON file.
     /// <para>Object type must have a parameterless constructor.</para>
-    /// <para>Only Public properties and variables will be written to the file. These can be any type though, even other classes.</para>
+    /// <para>Only public properties and variables will be written to the file. These can be any type though, even other classes.</para>
     /// <para>If there are public properties/variables that you do not want written to the file, decorate them with the [JsonIgnore] attribute.</para>
     /// </summary>
     /// <typeparam name="T">The type of object being written to the file.</typeparam>
-    /// <param name="filePath">The file path to write the object instance to.</param>
+    /// <param name="logger">The logger instance for error logging.</param>
+    /// <param name="path">The file path to write the object instance to.</param>
     /// <param name="objectToWrite">The object instance to write to the file.</param>
-    /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
+    /// <param name="args">Optional arguments for controlling the write behavior.</param>
+    /// <returns>True if the write was successful; otherwise, false.</returns>
     public static
 #if ASYNC
     async Task<bool>
 #else
-    void  
+    void
 #endif
  WriteToJsonFile<T>(ILogger logger,
         string path,
         T objectToWrite,
-        WriteToJsonFileArgs? a = null
+        WriteToJsonFileArgs? args = null
     )
         where T : new()
     {
-        if (a == null)
+        if (args == null)
         {
-            a = new WriteToJsonFileArgs();
+            args = new WriteToJsonFileArgs();
         }
         string? contentsToWriteToFile = null;
         try
         {
-            contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite, a.Formatting);
+            contentsToWriteToFile = JsonConvert.SerializeObject(objectToWrite, args.Formatting);
         }
         catch (Exception ex)
         {
             logger.LogError(ex.Message);
             return false;
         }
-        if (a.TwoBackslashToSingle)
+        if (args.TwoBackslashToSingle)
         {
             contentsToWriteToFile = contentsToWriteToFile.Replace(@"\\", "\\");
         }
-        if (a.Append)
+        if (args.Append)
         {
             await File.AppendAllTextAsync(path, contentsToWriteToFile);
         }
@@ -57,19 +59,21 @@ public static class SerializerHelperJson
         return true;
     }
     /// <summary>
-    /// Reads an object instance from an Json file.
+    /// Reads an object instance from a JSON file.
     /// <para>Object type must have a parameterless constructor.</para>
     /// </summary>
     /// <typeparam name="T">The type of object to read from the file.</typeparam>
-    /// <param name="filePath">The file path to read the object instance from.</param>
-    /// <returns>Returns a new instance of the object read from the Json file.</returns>
+    /// <param name="logger">The logger instance for error logging.</param>
+    /// <param name="path">The file path to read the object instance from.</param>
+    /// <param name="args">Arguments for controlling the read behavior.</param>
+    /// <returns>Returns a new instance of the object read from the JSON file, or null if deserialization fails.</returns>
     public static
 #if ASYNC
     async Task<T?>
 #else
-    T  
+    T
 #endif
- ReadFromJsonFile<T>(ILogger logger, string path, ReadFromJsonFileArgs a)
+ ReadFromJsonFile<T>(ILogger logger, string path, ReadFromJsonFileArgs args)
         where T : new()
     {
         var fileContents =
@@ -77,19 +81,19 @@ public static class SerializerHelperJson
     await
 #endif
 File.ReadAllTextAsync(path);
-        if (a.TwoSingleToBackslash)
+        if (args.TwoSingleToBackslash)
         {
             fileContents = fileContents.Replace("\\", "\\\\");
         }
-        T? deser = default;
+        T? deserializedObject = default;
         try
         {
-            deser = JsonConvert.DeserializeObject<T>(fileContents);
+            deserializedObject = JsonConvert.DeserializeObject<T>(fileContents);
         }
         catch (Exception ex)
         {
             logger.LogError(ex.Message);
         }
-        return deser;
+        return deserializedObject;
     }
 }

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SunamoJson.Tests\\SunamoJson.Tests.csproj" />
+  <Project Path="RunnerJson\\RunnerJson.csproj" />
+  <Project Path="SunamoJson\SunamoJson.csproj" />
+</Solution>

@@ -11,8 +11,6 @@ global using System.Threading.Tasks;
 global using Microsoft.Extensions.Logging;
 global using Newtonsoft.Json;
 global using SunamoJson;
-global using SunamoJson._sunamo;
-global using SunamoJson._sunamo.SunamoExceptions;
 global using SunamoJson.Args;
 global using ILogger = Microsoft.Extensions.Logging.ILogger;
 global using NullLogger = Microsoft.Extensions.Logging.Abstractions.NullLogger;

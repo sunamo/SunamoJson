@@ -1,5 +1,3 @@
-using RunnerJson;
-
 namespace RunnerJson;
 
 internal class Program

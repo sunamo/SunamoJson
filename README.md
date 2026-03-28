@@ -1,6 +1,6 @@
 # SunamoJson
 
-Wrapper aroung Utf8Json, switching between different json libraries within one interface
+JSON serialization and deserialization helper library built on Newtonsoft.Json, providing simplified file I/O operations for JSON data.
 
 ## Overview
 
@@ -10,14 +10,16 @@ SunamoJson is part of the Sunamo package ecosystem, providing modular, platform-
 
 ### Key Classes
 
-- **ReadFromJsonFileArgs**
-- **WriteToJsonFileArgs**
-- **JsonGenerator**
-- **SerializerHelperJson**
+- **SerializerHelperJson** - Read from and write to JSON files with configurable options
+- **JsonGenerator** - Simple JSON content builder using key-value pairs
+- **ReadFromJsonFileArgs** - Configuration for JSON file reading
+- **WriteToJsonFileArgs** - Configuration for JSON file writing
 
 ### Key Methods
 
-- `Pair()`
+- `SerializerHelperJson.WriteToJsonFile<T>()` - Serialize an object to a JSON file
+- `SerializerHelperJson.ReadFromJsonFile<T>()` - Deserialize an object from a JSON file
+- `JsonGenerator.Pair()` - Add a key-value pair to JSON output
 
 ## Installation
 
@@ -27,16 +29,15 @@ dotnet add package SunamoJson
 
 ## Dependencies
 
-- **Microsoft.Extensions.Logging.Abstractions** (v9.0.3)
-- **Newtonsoft.Json** (v13.0.3)
+- **Newtonsoft.Json** (13.0.4)
+- **Microsoft.Extensions.Logging.Abstractions** (10.0.2)
 
 ## Package Information
 
 - **Package Name**: SunamoJson
-- **Version**: 25.3.29.1
-- **Target Framework**: net9.0
+- **Version**: 26.2.7.2
+- **Target Frameworks**: net10.0;net9.0;net8.0
 - **Category**: Platform-Independent NuGet Package
-- **Source Files**: 9
 
 ## Related Packages
 
@@ -44,4 +45,4 @@ This package is part of the Sunamo package ecosystem. For more information about
 
 ## License
 
-See the repository root for license information.
+MIT

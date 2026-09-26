@@ -18,11 +18,7 @@ public static class SerializerHelperJson
     /// <param name="args">Optional arguments for controlling the write behavior.</param>
     /// <returns>True if the write was successful; otherwise, false.</returns>
     public static
-#if ASYNC
     async Task<bool>
-#else
-    void
-#endif
  WriteToJsonFile<T>(ILogger logger,
         string path,
         T objectToWrite,
@@ -30,10 +26,7 @@ public static class SerializerHelperJson
     )
         where T : new()
     {
-        if (args == null)
-        {
-            args = new WriteToJsonFileArgs();
-        }
+        args ??= new WriteToJsonFileArgs();
         string? contentsToWriteToFile = null;
         try
         {
@@ -50,11 +43,11 @@ public static class SerializerHelperJson
         }
         if (args.Append)
         {
-            await File.AppendAllTextAsync(path, contentsToWriteToFile);
+            await FileAsync.AppendAllTextAsync(path, contentsToWriteToFile);
         }
         else
         {
-            await File.WriteAllTextAsync(path, contentsToWriteToFile);
+            await FileAsync.WriteAllTextAsync(path, contentsToWriteToFile);
         }
         return true;
     }
@@ -68,19 +61,13 @@ public static class SerializerHelperJson
     /// <param name="args">Arguments for controlling the read behavior.</param>
     /// <returns>Returns a new instance of the object read from the JSON file, or null if deserialization fails.</returns>
     public static
-#if ASYNC
     async Task<T?>
-#else
-    T
-#endif
  ReadFromJsonFile<T>(ILogger logger, string path, ReadFromJsonFileArgs args)
         where T : new()
     {
         var fileContents =
-#if ASYNC
     await
-#endif
-File.ReadAllTextAsync(path);
+FileAsync.ReadAllTextAsync(path);
         if (args.TwoSingleToBackslash)
         {
             fileContents = fileContents.Replace("\\", "\\\\");

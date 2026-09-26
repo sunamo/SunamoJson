@@ -14,7 +14,7 @@ public class JsonGenerator
     /// <param name="value">The JSON property value.</param>
     public void Pair(string key, string value)
     {
-        stringBuilder.AppendLine("\"" + key + "\": " + "\"" + value + "\",");
+        stringBuilder.AppendLine($"\"{key}\": \"{value}\",");
     }
 
     /// <summary>

@@ -1,5 +1,10 @@
 # SunamoJson
 
+## Short description
+
+Pomocná knihovna pro serializaci a deserializaci JSON nad Newtonsoft.Json se zjednodušeným čtením a zápisem souborů. Obsahuje Runner a testy.
+
+
 JSON serialization and deserialization helper library built on Newtonsoft.Json, providing simplified file I/O operations for JSON data.
 
 ## Overview
